@@ -47,12 +47,6 @@ void delay_1s();
  * @param duty The duty cycle percentage (0-100)
  */
 void duty_cycle_2s(uint32_t duty);
-
-/**
- * @brief LED brightness ramp-up and ramp-down mode
- *
- * This function increases the brightness of the LED from 0% to 100%
- * and then decreases it back to 0% in a smooth manner.
  */
 #endif // GPIO_H
 /*******************************************************************************
