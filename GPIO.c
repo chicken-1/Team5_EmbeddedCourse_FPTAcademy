@@ -24,6 +24,7 @@ void initLed() {
 /* 100hz -> period = 20ms -> 1% = 200us */
 void delay_200us() {
     uint32_t index;
+
     for(index = 0; index < DELAY_CNT_200us; index++) {
         __asm("nop");
     }
@@ -31,6 +32,7 @@ void delay_200us() {
 
 void delay_1s() {
     uint32_t index;
+
     for(index = 0; index < DELAY_CNT_1s; index++) {
         __asm("nop");
     }
@@ -38,6 +40,7 @@ void delay_1s() {
 
 void duty_cycle_2s(uint32_t duty) {
     uint32_t index;
+
     FGPIOB->PTOR |= 1 << 4;
     for(index = 1; index <= duty; index++) {
         delay_200us();

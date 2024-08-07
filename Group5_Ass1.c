@@ -10,13 +10,13 @@
  * @brief Blink the LED 
  * return None
  */
-void mode1();
+static void mode1();
 
 /**
  * @brief Toggle the LED
  * Return None
  */
-void mode2();
+static void mode2();
 
 /*******************************************************************************
 * Main Function
@@ -32,7 +32,7 @@ int main() {
 /*******************************************************************************
 * Function
 *******************************************************************************/
-void mode1() {
+static void mode1() {
     uint32_t count_ms = 0;
     uint32_t duty;
     while(count_ms < 8) {
@@ -49,7 +49,7 @@ void mode1() {
     }
 }
 
-void mode2() {
+static void mode2() {
     uint32_t count_ms = 0;
     while(count_ms < 8) {
         FGPIOB->PTOR |= GREEN_LED_PIN;
