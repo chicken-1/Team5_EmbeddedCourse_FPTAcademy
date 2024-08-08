@@ -9,11 +9,26 @@
 /*******************************************************************************
 * Prototypes
 *******************************************************************************/
+
+/*
+ * @brief: Initial Led Pin
+ *
+ */
 void HAL_GPIO_InitLed();
-void HAL_GPIO_Delay200us();
-void HAL_GPIO_Delay1s();
-void HAL_GPIO_DutyCycle2s(uint32_t duty);
+
+/*
+ * @brief: Fade led
+ *
+ *	Blinking effect with gradual increase in brightness up to the maximum and
+ *	then gradual decrease to 0%,with a cycle time of 4s.
+ */
 void HAL_GPIO_Mode1();
+
+/*
+ * @brief: Toggle Led
+ *
+ * Toggle the LED with a cycle time of 1s (frequency of 1 Hz).
+ */
 void HAL_GPIO_Mode2();
 
 #endif // HAL_GPIO_H
