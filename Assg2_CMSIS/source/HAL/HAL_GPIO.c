@@ -33,7 +33,7 @@ void HAL_GPIO_Mode2() {
     uint32_t count_ms = 0;
 
     while (count_ms < 8) {
-        Driver_GPIO_Toggle();
+        Driver_GPIO_Toggle(FGPIOB, 4);
         Driver_GPIO_Delay1s();
         count_ms++;
     }
