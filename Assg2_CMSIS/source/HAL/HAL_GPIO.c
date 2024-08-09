@@ -28,7 +28,7 @@ void HAL_GPIO_Init(FGPIO_Type* fgpio, uint8_t pin) {
 		pcc_port_index = PCC_PORTC_INDEX;
 		port = PORTC;
 	}
-	else if (fgpio == FGPIOD){
+	else {
 		pcc_port_index = PCC_PORTC_INDEX;
 		port = PORTD;
 	}
