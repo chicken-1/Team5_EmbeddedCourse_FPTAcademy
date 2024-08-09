@@ -7,7 +7,7 @@
 * Definitions
 *******************************************************************************/
 #define DELAY_CNT_1s            (3750000)
-#define DELAY_CNT_200us         ((DELAY_CNT_1s / 10000) * 2) // = 750
+#define DELAY_CNT_200us         ((DELAY_CNT_1s / 10000) * 2) /* = 750 */
 #define GREEN_LED_PIN           (1 << 4)
 
 /*******************************************************************************
@@ -50,7 +50,7 @@ void Driver_GPIO_DutyCycle2s(uint32_t duty) {
 }
 
 void Driver_GPIO_Toggle() {
-    FGPIOB->PTOR |= GREEN_LED_PIN;	/* Tonggle the LED */
+    FGPIOB->PTOR |= GREEN_LED_PIN;	/* Toggle the LED */
 }
 
 /*******************************************************************************
