@@ -9,27 +9,37 @@
 /*******************************************************************************
 * Prototypes
 *******************************************************************************/
-
 /*
  * @brief: Initial Led Pin
  *
  */
-void HAL_GPIO_InitLed();
+void HAL_GPIO_Init(FGPIO_Type* fgpio, uint8_t pin);
 
-/*
- * @brief: Fade led
+/**
+ * @brief Delay for approximately 200 microseconds
  *
- *	Blinking effect with gradual increase in brightness up to the maximum and
- *	then gradual decrease to 0%,with a cycle time of 4s.
+ * This function creates a delay of approximately 200 microseconds
+ * by running a loop with NOP instructions.
  */
-void HAL_GPIO_Mode1();
+void HAL_GPIO_Delay200us();
 
-/*
- * @brief: Toggle Led
+/**
+ * @brief Delay for approximately 1 second
  *
- * Toggle the LED with a cycle time of 1s (frequency of 1 Hz).
+ * This function creates a delay of approximately 1 second
+ * by running a loop with NOP instructions.
  */
-void HAL_GPIO_Mode2();
+void HAL_GPIO_Delay1s();
+
+/**
+ * @brief Generate a PWM-like signal for 2 seconds with a specific duty cycle
+ *
+ * This function toggles the LED pin on and off to simulate a PWM signal
+ * for 2 seconds, with the LED on for a duration proportional to the duty cycle.
+ *
+ * @param duty The duty cycle percentage (0-100)
+ */
+void HAL_GPIO_Set_DutyCycle2s(uint32_t duty, FGPIO_Type* fgpio, uint8_t pin);
 
 #endif // HAL_GPIO_H
 

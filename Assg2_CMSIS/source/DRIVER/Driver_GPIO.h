@@ -10,20 +10,51 @@
 * Prototypes
 *******************************************************************************/
 /**
- * @brief Initialize the LED pin
+ * @brief Enables the clock for a specific GPIO port.
  *
- * This function configures the necessary registers to initialize
- * the LED pin as an output and sets its initial state.
+ * @param[in] pcc_port_index Index of the PCC port to enable the clock for
  */
-void Driver_GPIO_InitLed();
+void Driver_GPIO_CLK(uint8_t pcc_port_index);
 
 /**
- * @brief Delay for approximately 200 microseconds
+ * @brief Configure specified pin as a GPIO pin
  *
- * This function creates a delay of approximately 200 microseconds
- * by running a loop with NOP instructions.
+ * @param[in] port Pointer to the GPIO port
+ *             pin Pin number within the port (0-31)
  */
-void Driver_GPIO_Delay200us();
+void Driver_GPIO_MUX(PORT_Type* port, uint8_t pin);
+
+/**
+ * @brief Configures a GPIO pin as an output.
+ *
+ * @param[in] fgpio Pointer to the GPIO register structure
+ * @param[in] pin Pin number within the GPIO port (0-31)
+ */
+void Driver_GPIO_Direction_Output(FGPIO_Type* fgpio, uint8_t pin);
+
+/**
+ * @brief Resets a GPIO pin low (output 0).
+ *
+ * @param[in] fgpio Pointer to the GPIO register structure
+ * @param[in] pin Pin number within the GPIO port (0-31)
+ */
+void Driver_GPIO_Output_Reset(FGPIO_Type* fgpio, uint8_t pin);
+
+/**
+ * @brief Sets a GPIO pin high (output 1).
+ *
+ * @param[in] fgpio Pointer to the GPIO register structure
+ * @param[in] pin Pin number within the GPIO port (0-31)
+ */
+void Driver_GPIO_Output_Set(FGPIO_Type* fgpio, uint8_t pin);
+
+/**
+ * @brief Toggles a GPIO pin
+ *
+ * @param[in] fgpio Pointer to the GPIO register structure
+ * @param[in] pin Pin number within the GPIO port (0-31)
+ */
+void Driver_GPIO_Toggle(FGPIO_Type* fgpio, uint8_t pin);
 
 /**
  * @brief Delay for approximately 1 second
@@ -32,21 +63,6 @@ void Driver_GPIO_Delay200us();
  * by running a loop with NOP instructions.
  */
 void Driver_GPIO_Delay1s();
-
-/**
- * @brief Generate a PWM-like signal for 2 seconds with a specific duty cycle
- *
- * This function toggles the LED pin on and off to simulate a PWM signal
- * for 2 seconds, with the LED on for a duration proportional to the duty cycle.
- *
- * @param duty The duty cycle percentage (0-100)
- */
-void Driver_GPIO_DutyCycle2s(uint32_t duty);
-
-/**
- * @brief Toggle the state of the LED pin
- */
-void Driver_GPIO_Toggle();
 
 #endif // DRIVER_GPIO_H
 
