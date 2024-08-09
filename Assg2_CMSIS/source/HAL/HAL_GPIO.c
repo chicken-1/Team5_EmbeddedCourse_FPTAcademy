@@ -28,11 +28,14 @@ void HAL_GPIO_Init(FGPIO_Type* fgpio, uint8_t pin) {
 		pcc_port_index = PCC_PORTC_INDEX;
 		port = PORTC;
 	}
-	else {
-		pcc_port_index = PCC_PORTC_INDEX;
+	else if (fgpio == FGPIOD) {
+		pcc_port_index = PCC_PORTD_INDEX;
 		port = PORTD;
 	}
-
+	else {
+		pcc_port_index = PCC_PORTE_INDEX;
+		port = PORTE;
+	}
     Driver_GPIO_CLK(pcc_port_index);
     Driver_GPIO_MUX(port, pin);
     Driver_GPIO_Direction_Output(fgpio, pin);
