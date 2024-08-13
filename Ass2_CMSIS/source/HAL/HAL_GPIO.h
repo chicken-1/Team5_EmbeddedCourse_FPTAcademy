@@ -1,21 +1,23 @@
 /*******************************************************************************
 * Definitions
 *******************************************************************************/
-#ifndef DRIVER_GPIO_H
-#define DRIVER_GPIO_H
+#ifndef HAL_GPIO_H
+#define HAL_GPIO_H
 
-#include "MKE16Z4.h"
+#include "Driver_GPIO.h"
 
 /*******************************************************************************
 * Prototypes
 *******************************************************************************/
-/**
- * @brief Initialize the LED pin
+/*
+ * @brief: Initial Led Pin
  *
- * This function configures the necessary registers to initialize
- * the LED pin as an output and sets its initial state.
  */
+<<<<<<< HEAD:Assg2_CMSIS/source/DRIVER/Driver_GPIO.h
 //void Driver_GPIO_InitLed();
+=======
+void HAL_GPIO_Init(FGPIO_Type* fgpio, uint8_t pin);
+>>>>>>> 1bbfb703fcc526d442c99aba4d39df4ad0da6988:Ass2_CMSIS/source/HAL/HAL_GPIO.h
 
 /**
  * @brief Delay for approximately 200 microseconds
@@ -23,6 +25,7 @@
  * This function creates a delay of approximately 200 microseconds
  * by running a loop with NOP instructions.
  */
+<<<<<<< HEAD:Assg2_CMSIS/source/DRIVER/Driver_GPIO.h
 
 /**
  * @brief Toggle the state of the LED pin
@@ -36,6 +39,9 @@ void Driver_GPIO_Output_ON(FGPIO_Type* fgpio, uint8_t bit);
 void Driver_GPIO_Toggle(FGPIO_Type* fgpio, uint8_t bit);
 
 void Driver_GPIO_Delay200us();
+=======
+void HAL_GPIO_Delay200us();
+>>>>>>> 1bbfb703fcc526d442c99aba4d39df4ad0da6988:Ass2_CMSIS/source/HAL/HAL_GPIO.h
 
 /**
  * @brief Delay for approximately 1 second
@@ -43,7 +49,7 @@ void Driver_GPIO_Delay200us();
  * This function creates a delay of approximately 1 second
  * by running a loop with NOP instructions.
  */
-void Driver_GPIO_Delay1s();
+void HAL_GPIO_Delay1s();
 
 /**
  * @brief Generate a PWM-like signal for 2 seconds with a specific duty cycle
@@ -53,9 +59,15 @@ void Driver_GPIO_Delay1s();
  *
  * @param duty The duty cycle percentage (0-100)
  */
+<<<<<<< HEAD:Assg2_CMSIS/source/DRIVER/Driver_GPIO.h
 //void Driver_GPIO_DutyCycle2s(uint32_t duty);
 
 #endif // DRIVER_GPIO_H
+=======
+void HAL_GPIO_Set_DutyCycle2s(uint32_t duty, FGPIO_Type* fgpio, uint8_t pin);
+
+#endif // HAL_GPIO_H
+>>>>>>> 1bbfb703fcc526d442c99aba4d39df4ad0da6988:Ass2_CMSIS/source/HAL/HAL_GPIO.h
 
 /*******************************************************************************
 * EOF
