@@ -4,7 +4,7 @@
 #define PCC_CGC_Mask			1 << 30
 #define GREEN_LED_PIN			4
 
-uint32_t ticks_mode3 = 1;
+uint32_t duty_cycle = 1;
 uint32_t duty = 1;
 
 void Init_GREEN_LED() {
@@ -22,7 +22,7 @@ void InitSW3() {
 	GPIOD->PDDR &= ~(1 << 2);						/* Set PTD2 as an input */
 	PORTD->PCR[2] |= PORT_PCR_IRQC(10);				/* Configure IRQ - falling edge */
 	
-	PORTD->PCR[Button_PIN] |= (1 << 24); 			/* Delete Interrupt flag status */
+	PORTD->PCR[2] |= 1 << 24; 			/* Delete Interrupt flag status */
 	/* PORTD->ISFR |= 1 << Button_PIN */
 	
 	__NVIC_EnableIRQ(PORTBCD_IRQn);					/* Enable Interrupt - PORT BCD */
@@ -37,7 +37,7 @@ void mode2() {
 }
 
 void mode3() {
-	if(duty <= ticks_mode3) {
+	if(duty <= duty_cycle) {
 		FGPIOB->PDOR &= ~(1 << 4);
 		duty++;
 	}
@@ -48,10 +48,10 @@ void mode3() {
 
 	if(duty == 101) {
 		duty = 1;
-		ticks_mode3++;
+		duty_cycle++;
 	}
-	if(ticks_mode3 == 101) {
-		ticks_mode3 = 1;
+	if(duty_cycle == 101) {
+		duty_cycle = 1;
 	}
 }
 
