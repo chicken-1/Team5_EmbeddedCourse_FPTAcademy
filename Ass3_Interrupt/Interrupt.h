@@ -8,7 +8,6 @@ void InitSW3();
 void mode1();
 void mode2();
 void mode3();
-void stop_mode();
 
 
 #endif /* INTERRUPT_H_ */
