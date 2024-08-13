@@ -25,8 +25,13 @@ void APP_GPIO_Mode2(FGPIO_Type* fgpio, uint8_t pin) {
     uint32_t count_ms = 0;
 
     while (count_ms < 8) {
+<<<<<<< HEAD:Assg2_CMSIS/source/HAL/HAL_GPIO.c
+        Driver_GPIO_Toggle(FGPIOB, 4);
+        Driver_GPIO_Delay1s();
+=======
         Driver_GPIO_Toggle(fgpio, pin);
         HAL_GPIO_Delay1s();
+>>>>>>> 1bbfb703fcc526d442c99aba4d39df4ad0da6988:Ass2_CMSIS/source/APP/APP_GPIO.c
         count_ms++;
     }
 }
