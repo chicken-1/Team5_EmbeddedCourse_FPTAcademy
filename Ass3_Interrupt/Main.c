@@ -8,7 +8,6 @@ typedef enum {
 } mode;
 
 mode current_mode = STOP_MODE;
-uint32_t ticks_mode2 = 0;
 
 void PORTBCD_IRQHandler(void) {
 	// Clear ISF flag
@@ -34,11 +33,7 @@ void SysTick_Handler() {
 		mode1();
 	}
 	else if (current_mode == MODE2) {
-		ticks_mode2 += 19200;
-		if (ticks_mode2 == 9600000) {
-			mode2();
-			ticks_mode2 = 0;
-		}
+		mode2();
 	}
 	else if (current_mode == MODE3) {
 		mode3();
