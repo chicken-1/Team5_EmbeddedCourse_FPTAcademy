@@ -39,7 +39,7 @@ void SysTick_Handler() {
 		mode3();
 	}
 	else {
-		// stop mode
+		stop_mode();
 	}
 }
 
