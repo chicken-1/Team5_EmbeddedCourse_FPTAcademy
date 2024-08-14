@@ -48,7 +48,7 @@ void mode2() {
 		ticks_mode2 = 0;
 	}
 	else {
-		ticks_mode2 += 19200; 	/* 19200 ticks = 400us */
+		ticks_mode2 += 4800; 	/* 4800 ticks = 100us */
 	}
 }
 
@@ -62,15 +62,15 @@ void mode3() {
 		duty++;
 	}
 
-	if(duty == 101) {
+	if(duty == 201) {
 		duty = 1;
-		duty_cycle++;
+		duty_cycle ++ ;
 	}
 	else {
 		/* Do nothing */
 	}
-	
-	if(duty_cycle == 101) {
+
+	if(duty_cycle == 201) {
 		duty_cycle = 1;
 	}
 	else {
