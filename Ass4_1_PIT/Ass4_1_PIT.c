@@ -48,6 +48,7 @@ void LPIT0_IRQHandler() {
 		greenCounter++;
 		if(greenCounter == 21) {
 			changeFlag = 1;
+			greenCounter = 0;
 		}
 	}
 	/* Flag = 1 -> blue led on 2.35s -- timer value = 50ms -> run 47 time */
@@ -57,6 +58,7 @@ void LPIT0_IRQHandler() {
 		blueCounter++;
 		if(blueCounter == 48) {
 			changeFlag = 0;
+			blueCounter = 0;
 		}
 	}
 }
