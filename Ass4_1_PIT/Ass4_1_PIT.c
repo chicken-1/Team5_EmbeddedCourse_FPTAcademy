@@ -12,8 +12,8 @@ void initLed() {
 	PCC->CLKCFG[PCC_PORTD_INDEX] |= 1 << 30;
 
 	/* Configure MUX for PORT B & D */
-	PORTB->PCR[4] |= 1 << GREEN_LED_PIN;
-	PORTD->PCR[1] |= 1 << BLUE_LED_PIN;
+	PORTB->PCR[4] |= 1 << 8;
+	PORTD->PCR[1] |= 1 << 8;
 
 	/* Configure direction output for LED green & blue */
 	FGPIOB->PDDR |= 1 << GREEN_LED_PIN;
