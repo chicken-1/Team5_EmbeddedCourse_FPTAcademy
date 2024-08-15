@@ -29,7 +29,7 @@ void initPIT() {
 	SCG->FIRCDIV |= 1 << 8;		/* configure div = 1 <=> Clock / 1 */
 
 	LPIT0->MCR |= 1 << 1;		/* Timer channels and registers are reset */
-	LPIT0->MCR &= ~(1 << 1)		/* Timer channels and registers are not reset */
+	LPIT0->MCR &= ~(1 << 1);	/* Timer channels and registers are not reset */
 	LPIT0->MCR |= 1 << 0;		/* Protocol clock to timers is enabled */
 
 	LPIT0->CHANNEL[0].TCTRL |= LPIT_TCTRL_MODE(0); /* 0 << 2 -- 32-bit Periodic Counter */
