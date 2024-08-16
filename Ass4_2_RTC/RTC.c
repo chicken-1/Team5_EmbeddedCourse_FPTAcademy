@@ -4,6 +4,11 @@
 #define BLUE_LED_PIN			1
 #define PCR_MUX_GPIO_Mask		1 << 8
 
+unsigned char led_green_on;
+unsigned char led_green_off;
+unsigned char led_blue_on;
+unsigned char led_blue_off;
+
 void initLED() {
 	PCC->CLKCFG[PCC_PORTB_INDEX] |= PCC_CLKCFG_CGC_MASK;
 	PCC->CLKCFG[PCC_PORTD_INDEX] |= PCC_CLKCFG_CGC_MASK;
@@ -43,5 +48,18 @@ void initRTC() {
 }
 
 int main() {
+	uint32_t previous_time = 0;
+	uint32_t current_time = 0;
 
+	previous_time = RTC->TSR;
+	while(1) {
+		/* 5000? not for sure (try to delay 5s for green led)*/
+		if ((current_time - previous_time) == 5000) {
+			previous_time = RTC->TSR;
+			FGPIOB->PTOR |= 1 << GREEN_LED_PIN;
+		}
+		else {
+			current_time = RTC->TSR;
+		}
+	}
 }
