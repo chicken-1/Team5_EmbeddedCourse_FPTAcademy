@@ -44,18 +44,23 @@ void initRTC() {
 	/* Disable interrupts */
 	RTC->IER = 0;
 	/* Stop timer */
-	RTC->SR &= ~RTC_SR_TCE_MASK;
+	RTC->TSR = 0;
+	RTC->SR |= RTC_SR_TCE_MASK;
 }
 
 int main() {
 	uint32_t previous_time = 0;
 	uint32_t current_time = 0;
 
+	initLED();
+	initRTC();
+
 	previous_time = RTC->TSR;
+	current_time = RTC->TSR;
 	while(1) {
 		/* 5000? not for sure (try to delay 5s for green led)*/
-		if ((current_time - previous_time) == 5000) {
-			previous_time = RTC->TSR;
+		if ((current_time - previous_time) >= 1) {
+			previous_time = current_time;
 			FGPIOB->PTOR |= 1 << GREEN_LED_PIN;
 		}
 		else {
