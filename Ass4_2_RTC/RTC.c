@@ -6,8 +6,8 @@
 
 unsigned char led_green_on = 1;
 unsigned char led_green_off = 2;
-unsigned char led_blue_on = 2;
-unsigned char led_blue_off = 1;
+unsigned char led_blue_on = 3;
+unsigned char led_blue_off = 3;
 
 void initLED() {
 	PCC->CLKCFG[PCC_PORTB_INDEX] |= PCC_CLKCFG_CGC_MASK;
@@ -67,7 +67,7 @@ int main() {
 		}
 		else if (((current_time - previous_time_blue) >= led_blue_off) && (!blue_on)) {
 			previous_time_blue = current_time;
-			FGPIOB->PDOR &= ~(1 << BLUE_LED_PIN);;	// turn on LED blue
+			FGPIOD->PDOR &= ~(1 << BLUE_LED_PIN);;	// turn on LED blue
 			blue_on = 1;
 		}
 		else if (((current_time - previous_time_green) >= led_green_on) && (green_on)) {
@@ -77,7 +77,7 @@ int main() {
 		}
 		else if(((current_time - previous_time_blue) >= led_blue_on) && (blue_on)) {
 			previous_time_blue = current_time;
-			FGPIOB->PDOR |= 1 << BLUE_LED_PIN;		// turn off LED blue
+			FGPIOD->PDOR |= 1 << BLUE_LED_PIN;		// turn off LED blue
 			blue_on = 0;
 		}
 		else {
