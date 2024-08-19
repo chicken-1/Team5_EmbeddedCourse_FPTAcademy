@@ -24,7 +24,7 @@ void initUART0() {
 
 	LPUART0->BAUD = (SystemCoreClock / (BaudRate_UART * 16)); /* OSR = 0b1111 -> OSR + 1 = 16 */
 
-	LPUART0->BAUD |= 1 << 13; /* Configure for 1 stop bit */
+	LPUART0->BAUD &= ~(1 << 13); /* Configure for 1 stop bit */
 
 	LPUART0->CTRL |= (1 << 19 | 1 << 18); /* Enable TE & RE */
 }
