@@ -3,6 +3,14 @@
 #define SystemCoreClock		48000000
 #define BaudRate_UART		9600
 
+void Delay()
+{
+	uint32_t index;
+	for(index = 0; index < 3750000; index++){
+		__asm("nop");
+	}
+}
+
 void initUART0() {
 	PCC->CLKCFG[PCC_PORTB_INDEX] |= PCC_CLKCFG_CGC(1); /* Configure clock for PORT B */
 	PORTB->PCR[0] |= PORT_PCR_MUX(2); /* 0b010 << 8 */
@@ -13,7 +21,7 @@ void initUART0() {
 	PCC->CLKCFG[PCC_LPUART0_INDEX] |= PCC_CLKCFG_CGC(1); /* 1 << 30 */
 	SCG->FIRCDIV |= SCG_FIRCDIV_FIRCDIV2(1); /* 1 << 8 */
 
-	LPUART0->CTRL &= ~(1 << 19 | 1 << 18); /* Disable TE & RE while configuring*/
+	//LPUART0->CTRL &= ~(1 << 19 | 1 << 18); /* Disable TE & RE while configuring*/
 
 	LPUART0->CTRL &= ~(1 << 4); /* 8-bit mode select */
 
@@ -47,5 +55,8 @@ int main () {
 //	uint8_t string = 'Hello World';
 
 	initUART0();
-	UART0_SendString((uint8_t *)"Hello World");
+	while(1){
+		UART0_SendString((uint8_t *)"Hello World\n");
+		Delay();
+	}
 }
