@@ -4,8 +4,11 @@
 #define SystemCoreClock		48000000
 #define BaudRate_UART		9600
 
-uint8_t *data_receive;
-uint8_t received_flag = 0;
+uint8_t data_receive[50];
+uint8_t comp_flag = 0;
+uint8_t string_task[14] = 	"Hello from PC!";
+uint8_t count = 0;
+
 void Delay()
 {
 	uint32_t index;
@@ -60,29 +63,31 @@ void UART0_SendString(uint8_t *str) {
 
 void LPUART0_IRQHandler() {
 	uint8_t data = 0;
-	uint8_t len = 0;
-
+	if(count == 14){
+			count = 0;
+		}
 	data = LPUART0->DATA & 0xFF;
 
-	if (data != '\0') {
-		len = strlen(data_receive);
-		data_receive[len] = data;
-		data_receive[len + 1] = '\0';
+	if(data != string_task[count]){
+		//UART0_SendChar(data);
+		comp_flag = 1;
 	}
-	else {
-		received_flag = 1;
+	count ++;
+	if(comp_flag == 0 && count == 14){
+				UART0_SendString((uint8_t *)"Hello World\n");
+	}if(comp_flag == 1){
+				comp_flag = 0;
+				count = 0;
 	}
+
 }
 int main () {
-//	uint8_t string = 'Hello World';
 
 	initUART0();
 	while(1){
-		if (received_flag) {
-			/* verify the string */
-
-		}
-		UART0_SendString((uint8_t *)"Hello World\n");
+		//UART0_SendString((uint8_t *)"Hello World\n");
 		Delay();
+		//count1 = count;
+
 	}
 }
