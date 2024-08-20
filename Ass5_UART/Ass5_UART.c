@@ -33,7 +33,7 @@ void initUART0() {
 
 	LPUART0->BAUD |= 1 << 17; /* Set BOTHEDGE */
 	LPUART0->BAUD &= ~(0b1011 << 24); /* Set OSR = 4 -> OSR + 1 = 5 */
-	LPUART0->BAUD |= LPUART_BAUD_SBR(1000); /* OSR = 0b0100 -> OSR + 1 = 5 */
+	LPUART0->BAUD = (LPUART0->BAUD & (~(1 << 2))) | LPUART_BAUD_SBR(1000); /* OSR = 0b0100 -> OSR + 1 = 5 */
 
 	LPUART0->BAUD &= ~(1 << 13); /* Configure for 1 stop bit */
 
