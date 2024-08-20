@@ -5,8 +5,8 @@
 
 void initUART0() {
 	PCC->CLKCFG[PCC_PORTB_INDEX] |= PCC_CLKCFG_CGC(1); /* Configure clock for PORT B */
-	PORTA->PCR[0] |= PORT_PCR_MUX(2); /* 0b010 << 8 */
-	PORTA->PCR[1] |= PORT_PCR_MUX(2); /* 0b010 << 8 */
+	PORTB->PCR[0] |= PORT_PCR_MUX(2); /* 0b010 << 8 */
+	PORTB->PCR[1] |= PORT_PCR_MUX(2); /* 0b010 << 8 */
 
 	/* Configure Clock for UART0 */
 	PCC->CLKCFG[PCC_LPUART0_INDEX] |= PCC_CLKCFG_PCS(3); /* 0b011 << 24 */
