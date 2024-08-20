@@ -1,8 +1,11 @@
 #include "MKE16Z4.h"
+#include <string.h>
 
 #define SystemCoreClock		48000000
 #define BaudRate_UART		9600
 
+uint8_t *data_receive;
+uint8_t received_flag = 0;
 void Delay()
 {
 	uint32_t index;
@@ -33,9 +36,13 @@ void initUART0() {
 
 	LPUART0->BAUD |= 1 << 17; /* Set BOTHEDGE */
 	LPUART0->BAUD &= ~(0b1011 << 24); /* Set OSR = 4 -> OSR + 1 = 5 */
-	LPUART0->BAUD = (LPUART0->BAUD & (~(1 << 2))) | LPUART_BAUD_SBR(1000); /* OSR = 0b0100 -> OSR + 1 = 5 */
+	LPUART0->BAUD |= LPUART_BAUD_SBR(1000); /* OSR = 0b0100 -> OSR + 1 = 5 */
 
 	LPUART0->BAUD &= ~(1 << 13); /* Configure for 1 stop bit */
+
+	LPUART0->CTRL |= 1 << 21; /* Enable receive interrupt */
+
+	__NVIC_EnableIRQ(LPUART0_IRQn);	/* Enable NVIC */
 
 	LPUART0->CTRL |= (1 << 19 | 1 << 18); /* Enable TE & RE */
 }
@@ -51,11 +58,30 @@ void UART0_SendString(uint8_t *str) {
 	}
 }
 
+void LPUART0_IRQHandler() {
+	uint8_t data = 0;
+	uint8_t len = 0;
+
+	data = LPUART0->DATA & 0xFF;
+
+	if (data != '\0') {
+		len = strlen(data_receive);
+		data_receive[len] = data;
+		data_receive[len + 1] = '\0';
+	}
+	else {
+		received_flag = 1;
+	}
+}
 int main () {
 //	uint8_t string = 'Hello World';
 
 	initUART0();
 	while(1){
+		if (received_flag) {
+			/* verify the string */
+
+		}
 		UART0_SendString((uint8_t *)"Hello World\n");
 		Delay();
 	}
