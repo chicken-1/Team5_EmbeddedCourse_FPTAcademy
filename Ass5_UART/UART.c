@@ -11,6 +11,7 @@ uint8_t comp_flag = 0;
 uint8_t string_test[14] = 	"Hello from PC!";
 uint8_t count = 0;
 uint8_t countSystick = 0;
+uint8_t receive_flag = 0;
 
 void Delay()
 {
@@ -81,32 +82,40 @@ void SysTick_Handler() {
 	}
 }
 
-void LPUART0_IRQHandler() {
+uint8_t check_receive(){
 	uint8_t data = 0;
-	if(count == 14){
-			count = 0;
+		if(count == 14){
+				count = 0;
+			}
+		data = LPUART0->DATA & 0xFF;
+
+		if(data != string_test[count]){
+			comp_flag = 1;
 		}
-	data = LPUART0->DATA & 0xFF;
+		count ++;
 
-	if(data != string_test[count]){
-		comp_flag = 1;
-	}
-	count ++;
-
-	if(comp_flag == 0) {
-		if (count == 14) {
-			//UART0_SendString((uint8_t *)"Hello World\n");
-			FGPIOD->PTOR |= 1 << BLUE_LED_PIN;
+		if(comp_flag == 0) {
+			if (count == 14) {
+				//UART0_SendString((uint8_t *)"Hello World\n");
+				//FGPIOD->PTOR |= 1 << BLUE_LED_PIN;
+				receive_flag = 1;
+			}
+			else {
+				/* Do nothing */
+				receive_flag = 0;
+			}
 		}
 		else {
-			/* Do nothing */
+			comp_flag = 0;
+			count = 0;
 		}
-	}
-	else {
-		comp_flag = 0;
-		count = 0;
-	}
+		return receive_flag;
+}
 
+void LPUART0_IRQHandler() {
+	if(check_receive()){
+		FGPIOD->PTOR |= 1 << BLUE_LED_PIN;
+	}
 }
 int main () {
 	initUART0();
