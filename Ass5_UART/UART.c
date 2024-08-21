@@ -10,6 +10,7 @@ uint8_t data_receive[50];
 uint8_t comp_flag = 0;
 uint8_t string_test[14] = 	"Hello from PC!";
 uint8_t count = 0;
+uint8_t countSystick = 0;
 
 void Delay()
 {
@@ -70,6 +71,16 @@ void UART0_SendString(uint8_t *str) {
 	}
 }
 
+void SysTick_Handler() {
+	if(countSystick == 4) {
+		UART0_SendString((uint8_t *)"Hello from MKE16Z!\n");
+		countSystick = 0;
+	}
+	else {
+		countSystick++;
+	}
+}
+
 void LPUART0_IRQHandler() {
 	uint8_t data = 0;
 	if(count == 14){
@@ -99,8 +110,10 @@ void LPUART0_IRQHandler() {
 }
 int main () {
 	initUART0();
+	initLED();
+	SysTick_Config(SystemCoreClock / 4);
 	while(1){
-		UART0_SendString((uint8_t *)"Hello World\n");
-		Delay();
+		//UART0_SendString((uint8_t *)"Hello World\n");
+		//Delay();
 	}
 }
