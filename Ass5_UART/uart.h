@@ -18,11 +18,6 @@
 #define PCR_MUX_GPIO_Mask	1 << 8
 
 /*******************************************************************************
-* variable
-*******************************************************************************/
-uint8_t check_receive();
-
-/*******************************************************************************
 * Prototypes
 *******************************************************************************/
 /**
@@ -61,6 +56,17 @@ void UART0_SendChar(uint8_t data);
  * @param str - Pointer to the string to be sent.
  */
 void UART0_SendString(uint8_t *str);
+
+/**
+* @brief Check if the received string is verified or not
+*
+* This function compare received data with each character of string test, and return 1 if
+* the received string is verified, 0 if it's not
+*
+* params[inout] count : the character's index of string test
+* return 1 or 0
+*/
+uint8_t check_receive();
 
 #endif /* UART_H_ */
 /*******************************************************************************
