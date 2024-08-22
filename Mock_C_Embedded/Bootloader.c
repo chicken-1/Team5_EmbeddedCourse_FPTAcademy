@@ -9,9 +9,71 @@
 #define SystemCoreClock		48000000
 #define BaudRate_UART		9600
 
+uint8_t queue[4][255];
+uint8_t push_index = 0;
+uint8_t element_index = 0;
+uint8_t pop_index = 0;
+uint8_t queue_element = 0;
+uint8_t error_check = 0;
 /*******************************************************************************
 * Function
 *******************************************************************************/
+
+void clear(uint8_t index){
+	uint8_t j = 0;
+	while(queue[index][j] != '\0'){
+		queue[index][j] = '\0';
+		j++;
+	}
+}
+
+void push_queue(uint8_t data){
+	if(data == '\n'){
+		push_index++;
+		queue_element++;
+
+		if(push_index == 4){
+			push_index = 0;
+		}
+		//clear(push_index);
+		element_index = 0;
+
+	}else if(data == '\r'){
+		/*do nothing*/
+	}else{
+		queue[push_index][element_index] = data;
+		element_index++;
+	}
+}
+
+void check_S(uint8_t* line){
+	if(line[0] != 'S'){
+		error_check = 1;
+	}
+}
+
+void parse_queue(uint8_t* line){
+	/*Check error ...*/
+	check_S(line);
+}
+
+void pop_queue(){
+
+	if(queue_element > 0){
+		parse_queue(queue[pop_index]);
+		queue_element--;
+		clear(pop_index);
+		pop_index++;
+		if(pop_index == 4){
+			pop_index = 0;
+		}
+	}
+
+
+}
+
+
+
 void initUART0() {
 	/* Configure Clock for UART0 */
 	PCC->CLKCFG[PCC_PORTB_INDEX] |= PCC_CLKCFG_CGC(1); /* Configure clock for PORT B */
@@ -56,17 +118,42 @@ void UART0_SendString(uint8_t *str) {
 
 void LPUART0_IRQHandler() {
 	uint8_t data = 0;
-
+	uint8_t flag = 0;
 	data = LPUART0->DATA & 0xFF;
 
-	UART0_SendChar(data);
+	//UART0_SendChar(data);
+
+		push_queue(data);
+		pop_queue();
 }
+
+void Delay()
+{
+	uint32_t index;
+	for(index = 0; index < 37500000/5; index++){
+		__asm("nop");
+	}
+}
+
 
 int main () {
 	initUART0();
+	uint8_t j = 0;
+	//Delay();
+//	for(uint8_t index = 0; index < 4; index ++){
+//		while(queue[index][j] != '\0'){
+//			UART0_SendChar(queue[index][j]);
+//			j++;
+//		}
+//			UART0_SendChar('\n');
+//		j = 0;
+//	}
 
 	while(1) {
-
+		if(error_check == 1){
+				UART0_SendChar('E');
+				error_check = 0;
+			}
 	}
 }
 /*******************************************************************************
