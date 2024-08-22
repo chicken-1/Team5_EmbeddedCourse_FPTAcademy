@@ -9,12 +9,12 @@
 #define SystemCoreClock		48000000
 #define BaudRate_UART		9600
 
-uint8_t queue[4][255];
-uint8_t push_index = 0;
-uint8_t element_index = 0;
-uint8_t pop_index = 0;
-uint8_t queue_element = 0;
-uint8_t error_check = 0;
+volatile uint8_t queue[4][255];
+volatile uint8_t push_index = 0;
+volatile uint8_t element_index = 0;
+volatile uint8_t pop_index = 0;
+volatile uint8_t queue_element = 0;
+volatile uint8_t error_check = 0;
 /*******************************************************************************
 * Function
 *******************************************************************************/
@@ -30,7 +30,7 @@ void clear(uint8_t index){
 void push_queue(uint8_t data){
 	if(data == '\n'){
 		push_index++;
-		queue_element++;
+		queue_element++;  // breakpoint debug
 
 		if(push_index == 4){
 			push_index = 0;
@@ -58,7 +58,6 @@ void parse_queue(uint8_t* line){
 }
 
 void pop_queue(){
-
 	if(queue_element > 0){
 		parse_queue(queue[pop_index]);
 		queue_element--;
@@ -68,11 +67,7 @@ void pop_queue(){
 			pop_index = 0;
 		}
 	}
-
-
 }
-
-
 
 void initUART0() {
 	/* Configure Clock for UART0 */
@@ -122,9 +117,10 @@ void LPUART0_IRQHandler() {
 	data = LPUART0->DATA & 0xFF;
 
 	//UART0_SendChar(data);
-
+	if (data != '\0') {
 		push_queue(data);
-		pop_queue();
+	}
+	//pop_queue();
 }
 
 void Delay()
@@ -138,7 +134,7 @@ void Delay()
 
 int main () {
 	initUART0();
-	uint8_t j = 0;
+	/*flag file ready*/
 	//Delay();
 //	for(uint8_t index = 0; index < 4; index ++){
 //		while(queue[index][j] != '\0'){
@@ -150,10 +146,12 @@ int main () {
 //	}
 
 	while(1) {
+		/*check flag file ready*/
+		/*pop_queue*/
 		if(error_check == 1){
-				UART0_SendChar('E');
-				error_check = 0;
-			}
+			UART0_SendChar('E');
+			error_check = 0;
+		}
 	}
 }
 /*******************************************************************************
