@@ -60,9 +60,20 @@ void push_queue(uint8_t data){
 void parse_queue(uint8_t* line){
 	if(first_flag == 0){
 		if(!check_Record_Start(line)){
+			error_check = 1;
+			first_flag = 1;
+		}
+	}
+	if(!check_S(line)){
 		error_check = 1;
-		first_flag = 1;
-	}}
+	}if(!check_Bytecount(line)){
+		error_check = 1;
+	}if(!Check_Sum(line)){
+		error_check = 1;
+	}if(!check_Hex(line)){
+		error_check = 1;
+	}
+
 
 }
 
@@ -73,6 +84,7 @@ void pop_queue(){
 		queue_element--;
 		if(queue[pop_index][1] == '9'){
 			terminate_flag = 1;
+			first_flag = 0;
 		}
 		clear(pop_index);
 		pop_index++;
