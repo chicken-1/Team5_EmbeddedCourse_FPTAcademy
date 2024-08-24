@@ -27,9 +27,7 @@ uint8_t check_Hex(const uint8_t* line);
 uint8_t Check_Sum(const uint8_t* hexStr);
 uint8_t check_Bytecount(const uint8_t* line);
 uint8_t check_S(const uint8_t* line);
-//uint8_t check_Format(const uint8_t* line);
 uint8_t check_Record_Start(const uint8_t* firstLine);
-//uint8_t check_Terminate(const uint8_t* line,uint8_t queue_index);
 
 #endif // FUNCTION_H
 /*******************************************************************************
