@@ -11,32 +11,36 @@
 #define SystemCoreClock		48000000
 #define BaudRate_UART		9600
 
-uint8_t queue[4][255];
-uint8_t temp_queue[255];
-uint8_t push_index = 0;
-uint8_t element_index = 0;
-uint8_t pop_index = 0;
-uint8_t queue_element = 0;
-uint8_t error_check = 0;
-uint8_t first_flag = 0;
-uint8_t count = 0;
-uint8_t terminate_flag = 0;
+uint8_t queue[4][256];
+uint8_t temp_queue[256];
+uint8_t push_index = 0;		/* index of queue that data will be pushed in */
+uint8_t element_index = 0;	/* index of element in queue */
+uint8_t pop_index = 0;		/* index of queue being handled then popped out */
+uint8_t queue_element = 0;	/* number of unhandled queues */
+error_t error_check = ERR_NONE;
+uint8_t first_flag = FALSE;
+uint8_t terminate_flag = FALSE;
 
 /*******************************************************************************
 * Function
 *******************************************************************************/
+void clear(uint8_t queueIndex){
+	uint8_t index = 0; /* index of element in a queue*/
 
-void clear(uint8_t index){
-	uint8_t j = 0;
+	while(queue[queueIndex][index] != '\0') {
+		queue[queueIndex][index] = '\0';
+		index++;
+	}
+}
 
-	while(queue[index][j] != '\0'){
-		queue[index][j] = '\0';
-		j++;
+void init_queue() {
+	for(int i =0; i < 4; i++){
+		clear(i);
 	}
 }
 
 void clear_temp() {
-	uint8_t index = 0;
+	uint8_t index = 0; /* index of element in a queue*/
 
 	while(temp_queue[index] != '\0') {
 		temp_queue[index] = '\0';
@@ -44,59 +48,73 @@ void clear_temp() {
 	}
 }
 
-void init_queue(){
-	for(int i =0; i < 4; i++){
-		clear(i);
-	}
-}
-
 void push_queue(uint8_t data){
-	if(data == '\n'){
+	if(data == '\n') {
 		push_index++;
 		queue_element++;
 
 		if(push_index == 4){
 			push_index = 0;
 		}
-		//clear(push_index);
 		element_index = 0;
 
-	}else if(data == '\r'){
+	}
+	else if(data == '\r') {
 		/*do nothing*/
-	}else{
+	}
+	else {
 		queue[push_index][element_index] = data;
 		element_index++;
 	}
 }
 
-
 void parse_queue(uint8_t* line){
-	if(first_flag == 0){
+	if(first_flag == FALSE) {
 		if(!check_Record_Start(line)){
-			error_check = 1;
+			error_check = ERR_RECORD_START;
 		}
-		first_flag = 1;
+		else {
+			/* Do nothing */
+		}
+		first_flag = TRUE;
+	}
+	else {
+		/* Do nothing */
 	}
 
 	if(!check_Hex(line)) {
-		error_check = 2;
+		error_check = ERR_HEX;
+	}
+	else {
+		/* Do nothing */
 	}
 
 	if(!check_S(line)) {
-		error_check = 3;
+		error_check = ERR_S_TYPE;
+	}
+	else {
+		/* Do nothing */
 	}
 
 	if(!check_Bytecount(line)) {
-		error_check = 4;
+		error_check = ERR_BYTE_COUNT;
+	}
+	else {
+		/* Do nothing */
 	}
 
-	if(!Check_Sum(line)) {
-		error_check = 5;
+	if(!check_Sum(line)) {
+		error_check = ERR_CHECK_SUM;
 	}
-	if(!check_Terminate(line, pop_index)) {
-			error_check = 6;
+	else {
+		/* Do nothing */
 	}
-
+	if(!check_Terminate(line)) {
+			error_check = ERR_TERMINATE;
+	}
+	else {
+		/* Do nothing */
+	}
 }
 
 void pop_queue(){
@@ -106,18 +124,24 @@ void pop_queue(){
 		parse_queue(queue[pop_index]);
 		queue_element--;
 
-		if((queue[pop_index][1] == '9') || (queue[pop_index][1] == '8') || (queue[pop_index][1] == '7')){
-							terminate_flag = 1;
-							first_flag = 0;
-						}
-
+		if((queue[pop_index][1] == '9') || (queue[pop_index][1] == '8')
+				|| (queue[pop_index][1] == '7')) {
+			terminate_flag = TRUE;
+			first_flag = FALSE;
+		}
 
 		clear(pop_index);
 		pop_index++;
 
-		if(pop_index == 4){
+		if(pop_index == 4) {
 			pop_index = 0;
 		}
+		else {
+			/* Do nothing */
+		}
+	}
+	else {
+		/* Do nothing */
 	}
 }
 
@@ -165,14 +189,15 @@ void UART0_SendString(uint8_t *str) {
 
 void LPUART0_IRQHandler() {
 	uint8_t data = 0;
-	data = LPUART0->DATA & 0xFF;
 
+	data = LPUART0->DATA & 0xFF;
 	push_queue(data);
 }
 
 void Delay()
 {
-	uint32_t index;
+	uint32_t index = 0;
+
 	for(index = 0; index < 37500000/500; index++){
 		__asm("nop");
 	}
@@ -181,26 +206,27 @@ void Delay()
 int main () {
 	initUART0();
 	init_queue();
+
 	while(1) {
 		pop_queue();
 		switch(error_check) {
-			case 1:
-				UART0_SendString((uint8_t*)"Error Record Start !\n");
+			case ERR_RECORD_START:
+				UART0_SendString((uint8_t*)"Error Record Start!\n");
 				break;
-			case 2:
-				UART0_SendString((uint8_t*)"Error Check Hex !\n");
+			case ERR_HEX:
+				UART0_SendString((uint8_t*)"Error Check Hex!\n");
 				break;
-			case 3:
-				UART0_SendString((uint8_t*)"Error Check S !\n");
+			case ERR_S_TYPE:
+				UART0_SendString((uint8_t*)"Error Check S!\n");
 				break;
-			case 4:
-				UART0_SendString((uint8_t*)"Error Check ByteCount !\n");
+			case ERR_BYTE_COUNT:
+				UART0_SendString((uint8_t*)"Error Check ByteCount!\n");
 				break;
-			case 5:
-				UART0_SendString((uint8_t*)"Error Check Sum !\n");
+			case ERR_CHECK_SUM:
+				UART0_SendString((uint8_t*)"Error Check Sum!\n");
 				break;
-			case 6:
-				UART0_SendString((uint8_t*)"Error Check Terminate !\n");
+			case ERR_TERMINATE:
+				UART0_SendString((uint8_t*)"Error Check Terminate!\n");
 				break;
 			default:
 				if(temp_queue[0] !=  '\0'){
@@ -212,19 +238,23 @@ int main () {
 					//UART0_SendString(temp_queue);
 					UART0_SendChar('\n');
 				}
+				else {
+					/* Do nothing */
+				}
 				break;
 		}
-		error_check = 0;
+		error_check = ERR_NONE;
 		clear_temp();
 
-		if(terminate_flag == 1){
+		if(terminate_flag == TRUE){
 			init_queue();
-			terminate_flag = 0;
-			push_index = 0;
-			pop_index = 0;
+			terminate_flag = FALSE;
+			push_index = FALSE;
+			pop_index = FALSE;
 		}
 	}
 }
+
 /*******************************************************************************
 * EOF
 *******************************************************************************/
