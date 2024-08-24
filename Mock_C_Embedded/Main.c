@@ -142,7 +142,6 @@ void UART0_SendString(uint8_t *str) {
 
 void LPUART0_IRQHandler() {
 	uint8_t data = 0;
-	uint8_t flag = 0;
 	data = LPUART0->DATA & 0xFF;
 
 	//UART0_SendChar(data);
@@ -163,16 +162,6 @@ void Delay()
 int main () {
 	initUART0();
 	init_queue();
-	uint8_t j = 0;
-	//Delay();
-//	for(uint8_t index = 0; index < 4; index ++){
-//		while(queue[index][j] != '\0'){
-//			UART0_SendChar(queue[index][j]);
-//			j++;
-//		}
-//			UART0_SendChar('\n');
-//		j = 0;
-//	}
 
 	while(1) {
 		pop_queue();
