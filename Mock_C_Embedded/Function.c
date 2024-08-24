@@ -116,41 +116,6 @@ uint8_t check_S(const uint8_t* line) {
 	return flag;
 }
 
-//uint8_t check_Format(const uint8_t* line) {
-//	uint8_t e_line1 = 1;
-//	uint32_t count_S1 = 0;
-//	uint32_t count_S2 = 0;
-//	uint32_t count_S3 = 0;
-//	uint8_t terminal[1] = "1";
-//	while ((line) != NULL) {
-//		if (line[e_line1] == '1') {
-//			count_S1++;
-//		}
-//		else if (line[e_line1] == '2') {
-//			count_S2++;
-//		}
-//		else if (line[e_line1] == '3') {
-//			count_S3++;
-//			}
-//		else{
-//			/*do nothing*/
-//		}
-//	}
-//	if ((count_S1 > count_S2) && (count_S1 > count_S3)) {
-//		terminal[0] = '1';
-//	}
-//	else if ((count_S2 > count_S1) && (count_S2 > count_S3)) {
-//		terminal[0] = '2';
-//	}
-//	else if ((count_S3 > count_S1) && (count_S3 > count_S2)) {
-//		terminal[0] = '3';
-//	}
-//	else {
-//		terminal[0] = 'F';
-//	}
-//	return terminal[0];
-//
-//}
 
 uint8_t check_Record_Start(const uint8_t* firstLine) {
 	uint8_t flag = TRUE;
@@ -165,23 +130,7 @@ uint8_t check_Record_Start(const uint8_t* firstLine) {
 	return flag;
 }
 
-//uint8_t check_Terminate(const uint8_t* line,uint8_t queue_index){
-//	uint8_t flag = TRUE;
-//	uint8_t data_type = 0;
-//	data_type = check_Format(line);
-//	if(queue[queue_index++][0] == '\0'){
-//		if(data_type == '1' && line[1] == '9' ){
-//			flag = TRUE;
-//		}else if(data_type == '2' && line[1] == '8'){
-//			flag = TRUE;
-//		}else if(data_type == '3' && line[1] == '7'){
-//			flag = TRUE;
-//		}else{
-//			flag = FALSE;
-//		}
-//	}
-//
-//}
+
 
 
 
