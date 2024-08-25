@@ -249,8 +249,8 @@ int main () {
 		if(terminate_flag == TRUE){
 			init_queue();
 			terminate_flag = FALSE;
-			push_index = FALSE;
-			pop_index = FALSE;
+			push_index = 0;
+			pop_index = 0;
 		}
 	}
 }
