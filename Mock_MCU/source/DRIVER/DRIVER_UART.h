@@ -42,14 +42,6 @@ void UART0_SendChar(uint8_t data);
  */
 void UART0_SendString(uint8_t *str);
 
-/**
- * @brief  Retrieves data from a UART register.
- *
- * @return Returns the 8-bit data read from the UART register.
- *
- * @note   This function typically reads data from a UART data register.
- */
-uint8_t get_Register_Data(void);
 
 /**
  * @brief  UART0 interrupt handler.

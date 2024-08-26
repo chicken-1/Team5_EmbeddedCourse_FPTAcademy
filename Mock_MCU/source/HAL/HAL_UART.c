@@ -17,12 +17,6 @@ void HAL_SendChar(uint8_t data){
 void HAL_SendString(uint8_t* string){
 	UART0_SendString(string);
 }
-
-uint8_t HAL_get_Register_Data(){
-	uint8_t data_reg = 0;
-	data_reg = get_Register_Data();
-	return data_reg;
-}
 /*******************************************************************************
 * EOF
 *******************************************************************************/

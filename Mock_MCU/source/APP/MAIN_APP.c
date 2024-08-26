@@ -13,6 +13,7 @@
 int main () {
 	HAL_Init_UART();
 	HAL_Erase_Flash();
+
 	while(1) {
 		pop_queue();
 		switch(error_check) {
@@ -44,6 +45,7 @@ int main () {
 				}
 				break;
 		}
+
 		reset_queue();
 	}
 }

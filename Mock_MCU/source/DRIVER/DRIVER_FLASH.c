@@ -9,11 +9,14 @@
 uint8_t hex_to_uint8(uint8_t high, uint8_t low) {
     uint8_t high_val = (high >= 'A') ? (high - 'A' + 10) : (high - '0');
     uint8_t low_val = (low >= 'A') ? (low - 'A' + 10) : (low - '0');
+
     return (high_val << 4) | low_val;
 }
 
 void hex_string_to_byte_array(const uint8_t *hex_string, uint8_t *byte_array, uint8_t length) {
-    for (uint8_t i = 0; i < length; i++) {
+	uint8_t i = 0;
+
+	for (i = 0; i < length; i++) {
         byte_array[i] = hex_to_uint8(hex_string[i * 2], hex_string[i * 2 + 1]);
     }
 }
@@ -58,6 +61,7 @@ void Program_LongWord(uint32_t Address, uint8_t *Data) {
 
     while (FTFA->FSTAT == 0x00);
 }
+
 /*******************************************************************************
  * EOF
  ******************************************************************************/

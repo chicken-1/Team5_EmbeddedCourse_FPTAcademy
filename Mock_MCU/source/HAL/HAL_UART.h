@@ -38,16 +38,6 @@ void HAL_SendChar(uint8_t data);
  */
 void HAL_SendString(uint8_t* string);
 
-/**
- * @brief  Reads data from a UART register.
- *
- * @return Returns the content of a specific UART register as an 8-bit unsigned integer.
- *
- * @note   The specific register being accessed should be documented within the function's
- *         implementation in the corresponding source file.
- */
-uint8_t HAL_get_Register_Data(void);
-
 #endif /* HAL_HAL_UART_H_ */
 
 /*******************************************************************************

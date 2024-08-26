@@ -49,18 +49,13 @@ void UART0_SendString(uint8_t *str) {
 	}
 }
 
-uint8_t get_Register_Data(){
-	uint8_t data_reg = 0;
-	data_reg = LPUART0->DATA & 0xFF;
-	return data_reg;
-}
-
 void LPUART0_IRQHandler() {
 	uint8_t data_reg = 0;
-	data_reg = get_Register_Data();
 
+	data_reg = LPUART0->DATA & 0xFF;
 	push_queue(data_reg);
 }
+
 /*******************************************************************************
  * EOF
  ******************************************************************************/

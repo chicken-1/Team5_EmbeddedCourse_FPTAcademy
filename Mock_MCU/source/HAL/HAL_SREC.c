@@ -1,7 +1,6 @@
 /*******************************************************************************
 * Includes
 *******************************************************************************/
-
 #include "HAL_SREC.h"
 
 /*******************************************************************************
@@ -19,214 +18,246 @@ uint8_t address[8];
 *******************************************************************************/
 
 uint8_t HexCharToValue(uint8_t c) {
-    uint8_t result = 0;
+    uint8_t value = 0;
 
     if ((c >= '0') && (c <= '9')) {
-        result = c - '0';
+        value = c - '0';
     }
     else if ((c >= 'A') && (c <= 'F')) {
-        result = c - 'A' + 10;
+        value = c - 'A' + 10;
     }
     else if ((c >= 'a') && (c <= 'f')) {
-        result = c - 'a' + 10;
+        value = c - 'a' + 10;
     }
     else {
-    	/* Do nothing */
+    	/* do nothing */
     }
 
-    return result;
+    return value;
 }
 
 uint8_t HexStringToByte(const uint8_t* hexStr) {
-    uint8_t value = (HexCharToValue(hexStr[0]) << 4) | HexCharToValue(hexStr[1]);
+    uint8_t value = 0;
+
+	value = (HexCharToValue(hexStr[0]) << 4) | HexCharToValue(hexStr[1]);
+
     return value;
 }
 
 uint8_t check_Hex(const uint8_t* line) {
-	uint8_t e_line = 2;
-	uint8_t flag = 1;
-	uint8_t check = flag;
+	uint8_t index = 2;
+	uint8_t checkVal = TRUE;
 
-	while ((line[e_line] != '\n') && (line[e_line] != '\0')) {
-		if ((line[e_line] >= '0') && (line[e_line] <= '9')) {
-			flag = TRUE;
+	while ((line[index] != '\n') && (line[index] != '\0')) {
+		if ((line[index] >= '0') && (line[index] <= '9')) {
+			checkVal = TRUE;
 		}
-		else if ((line[e_line] >= 'A') && (line[e_line] <= 'F')) {
-			flag = TRUE;
+		else if ((line[index] >= 'A') && (line[index] <= 'F')) {
+			checkVal = TRUE;
 		}
 		else {
-			flag = FALSE;
-			check = flag;
+			checkVal = FALSE;
 		}
-		e_line++;
+		index++;
 	}
 
-	return check;
+	return checkVal;
 }
 
-uint8_t Check_Sum(const uint8_t* hexStr) {
-    uint8_t checkVal = 0;
-    uint8_t size_rc = (uint8_t)strlen((const char*)hexStr);
-    uint8_t checksum = HexStringToByte(&hexStr[size_rc - 2]);
+uint8_t check_Sum(const uint8_t* line) {
+    uint8_t checkVal = FALSE;
+    uint8_t lineLen = 0;
+    uint8_t checkSum = 0;
     uint8_t sum = 0;
     uint8_t index = 0;
-    uint8_t count = 0;
+    uint8_t byteVal = 0; /* value of tracking byte */
 
-    for (index = 2; index < size_rc - 2; index += 2) { //index
-        count = HexStringToByte(&hexStr[index]);
-        sum += count;
+	lineLen = (uint8_t)strlen((const char*)line);
+	checkSum = HexStringToByte(&line[lineLen - 2]);
+
+    /* calculate sum of byte count, address, data field */
+    for (index = 2; index < lineLen - 2; index += 2) {
+        byteVal = HexStringToByte(&line[index]);
+        sum += byteVal;
     }
 
     sum = 0xFF - (sum & 0xFF);
 
-    if (sum == checksum) {
-        checkVal = 1;
+    if (sum == checkSum) {
+        checkVal = TRUE;
     }
     else {
-        checkVal = 0;
+        checkVal = FALSE;
     }
 
     return checkVal;
 }
 
 uint8_t check_Bytecount(const uint8_t* line) {
-    uint8_t checkVal = 0;
-    uint8_t count = HexStringToByte(&line[2]);
-    uint32_t size_rc = (uint32_t)strlen((const char*)line);
-    uint32_t dataLength = size_rc - BYTE_COUNT - BYTE_TYPE;
+    uint8_t checkVal = FALSE;
+    uint8_t byteCount = 0; 		 /* value of byte count field */
+    uint32_t lineLen = 0;
+    uint32_t byteCountCheck = 0; /* calculate the actual value of byte count */
 
-    if (count == (dataLength / HEX_BYTE_LENGTH)) {
-        checkVal = 1;
+	byteCount = HexStringToByte(&line[2]);
+	lineLen = (uint32_t)strlen((const char*)line);
+	byteCountCheck = lineLen - BC_FIELD_LENGTH - STYPE_FIELD_LENGTH;
+
+    if (byteCount == (byteCountCheck / BYTE_LENGTH)) {
+        checkVal = TRUE;
     }
     else
     {
-        checkVal = 0;
+        checkVal = FALSE;
     }
 
     return checkVal;
 }
 
 uint8_t check_S(const uint8_t* line) {
-	uint8_t flag = TRUE;
+	uint8_t checkVal = TRUE;
 
 	if (line[0] != 'S') {
-		flag = FALSE;
+		checkVal = FALSE;
 	}
 	else {
 		if (line[1] == '4') {
-			flag = FALSE;
+			checkVal = FALSE;
 		}
-		else if ((line[1] < '0') || (line[1]>'9')) {
-			flag = FALSE;
+		else if ((line[1] < '0') || (line[1] > '9')) {
+			checkVal = FALSE;
 		}
 		else {
-			flag = TRUE;
+			checkVal = TRUE;
 		}
 	}
 
-	return flag;
+	return checkVal;
 }
 
-uint8_t check_Format(const uint8_t* line) {
-	uint8_t e_line1 = 1;
-	uint8_t terminal[1] = "1";
+uint8_t find_Data_Type(const uint8_t* line) {
+	uint8_t index = 1;
+	uint8_t dataType = '1';
 
-	if (line[e_line1] == '1') {
+	if (line[index] == '1') {
 		count_S1++;
 	}
-	else if (line[e_line1] == '2') {
+	else if (line[index] == '2') {
 		count_S2++;
 	}
-	else if (line[e_line1] == '3') {
+	else if (line[index] == '3') {
 		count_S3++;
 	}
-	else{
-		/*do nothing*/
+	else {
+		/* do nothing */
 	}
 
 	if ((count_S1 > count_S2) && (count_S1 > count_S3)) {
-		terminal[0] = '1';
-	}else if ((count_S2 > count_S1) && (count_S2 > count_S3)) {
-		terminal[0] = '2';
+		dataType = '1';
+	}
+	else if ((count_S2 > count_S1) && (count_S2 > count_S3)) {
+		dataType = '2';
 	}
 	else if ((count_S3 > count_S1) && (count_S3 > count_S2)) {
-		terminal[0] = '3';
+		dataType = '3';
 	}
 	else {
-		terminal[0] = 'F';
+		dataType = 'F';
 	}
-	return terminal[0];
+
+	return dataType;
 
 }
 
 uint8_t check_Record_Start(const uint8_t* firstLine) {
-	uint8_t flag = TRUE;
+	uint8_t checkVal = TRUE;
 
 	if ((firstLine[0] != 'S') || (firstLine[1] != '0')) {
-		flag = FALSE;
+		checkVal = FALSE;
 	}
 	else {
-		flag = TRUE;
+		checkVal = TRUE;
 	}
 
-	return flag;
+	return checkVal;
 }
 
-uint8_t check_Terminate(const uint8_t* line){
-	uint8_t flag = TRUE;
+uint8_t check_Terminate(const uint8_t* line) {
+	uint8_t checkVal = TRUE;
 	uint8_t data_type = 0;
-	data_type = check_Format(line);
-	if(line[1] == '9' || line[1] =='8' || line[1] == '7'){
-		if(data_type == '1' && line[1] == '9' ){
-			flag = TRUE;
-		}else if(data_type == '2' && line[1] == '8'){
-			flag = TRUE;
-		}else if(data_type == '3' && line[1] == '7'){
-			flag = TRUE;
-		}else{
-			flag = FALSE;
+
+	data_type = find_Data_Type(line);
+
+	if ((line[1] == '9') || (line[1] == '8') || (line[1] == '7')) {
+		if ((data_type == '1') && (line[1] == '9')) {
+			checkVal = TRUE;
+		}
+		else if ((data_type == '2') && (line[1] == '8')) {
+			checkVal = TRUE;
+		}
+		else if ((data_type == '3') && (line[1] == '7')) {
+			checkVal = TRUE;
+		}
+		else {
+			checkVal = FALSE;
 		}
 	}
-	return flag;
+	else {
+		/* do nothing */
+	}
+
+	return checkVal;
 }
 
-void get_Address(const uint8_t* line){
-	uint8_t strAddress[8] = { 0, };
-	uint8_t addressWidth = 0;	//number of text charactor, max is 32bit = 4 bytes = 8 characters
-	if(line[1] == '1' || line[1] == '0'){
-			addressWidth = 4;
-		}else if(line[1] == '2'){
-			addressWidth = 6;
-		}else if(line[1] == '3'){
-			addressWidth = 8;
-		}else{
-			/*do nothing*/
-		}
-	strncpy((char*)strAddress,(char*) &line[4], addressWidth);
+void get_Address(const uint8_t* line) {
+	uint8_t strAddress[8] = { 0, };  /* temporaray data array */
+	uint8_t addressLen = 0;	           /* length of address field, max is 4 bytes = 8 chars */
+
+	if ((line[1] == '1') || (line[1] == '0')) {
+		addressLen = 4;
+	}
+	else if (line[1] == '2') {
+		addressLen = 6;
+	}
+	else if (line[1] == '3') {
+		addressLen = 8;
+	}
+	else {
+		/* do nothing */
+	}
+
+	strncpy((char*)strAddress,(char*) &line[STYPE_FIELD_LENGTH + BC_FIELD_LENGTH]
+	         , addressLen);
 	strcpy((char*)address, (char*)strAddress);
 
 }
 
-void get_Data(const uint8_t* line){
-	uint8_t strData[250] = { 0, };
-	uint8_t dataWidth = 0;		//number of text charactor
-	uint8_t addressWidth = 0;	//number of text charactor, max is 32bit = 4 bytes = 8 characters
-	if(line[1] == '1' || line[1] == '0'){
-			addressWidth = 4;
-		}else if(line[1] == '2'){
-			addressWidth = 6;
-		}else if(line[1] == '3'){
-			addressWidth = 8;
-		}else{
-			/*do nothing*/
-		}
-	dataWidth = strlen((char*)line) - 6 - addressWidth;
-	strncpy((char*)strData,(char*) &line[4+addressWidth ], dataWidth);
+void get_Data(const uint8_t* line) {
+	uint8_t strData[255] = { 0, };  /* temporaray data array */
+	uint8_t dataLen = 0;			/* length of data field */
+	uint8_t addressLen = 0;			/* length of address field, max is 4 bytes = 8 chars */
 
+	if ((line[1] == '1') || (line[1] == '0')) {
+		addressLen = 4;
+	}
+	else if (line[1] == '2') {
+		addressLen = 6;
+	}
+	else if (line[1] == '3') {
+		addressLen = 8;
+	}
+	else {
+		/* do nothing */
+	}
+
+	dataLen = strlen((char*)line) - BC_FIELD_LENGTH - STYPE_FIELD_LENGTH
+	         - CS_FIELD_LENGTH - addressLen;
+	strncpy((char*)strData,(char*) &line[STYPE_FIELD_LENGTH + BC_FIELD_LENGTH
+	         + addressLen], dataLen);
 	strcpy((char*)data, (char*)strData);
 
-}
 
+}
 
 /*******************************************************************************
 * EOF
