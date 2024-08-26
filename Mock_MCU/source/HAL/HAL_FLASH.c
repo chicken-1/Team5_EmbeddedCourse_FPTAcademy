@@ -1,18 +1,23 @@
 #include "HAL_FLASH.h"
+#include <string.h>
 
-uint32_t address_fl[4];
-uint32_t data_fl[128];
-uint32_t address_temp = 0x0;
+void HAL_Erase_Flash(){
+	Erase_Sector(0xA000);
+}
 
 void Write_to_Flash(const uint8_t* data, const uint8_t* address){
-
-	uint8_t data_len = strlen((char*) data)/2;
-	uint8_t address_len = strlen((char*) address)/2;
 	uint8_t address_fl[4];
 	uint8_t data_fl[128];
 	uint32_t address_temp = 0x0;
 
-	hex_string_to_byte_array(data, data_fl, data_len);
+
+	uint8_t data_len = strlen((char*) data)/2;
+	uint8_t address_len = strlen((char*) address)/2;
+
+	uint8_t hex_data[255] = {0};
+	strcpy((char*)hex_data, (char*) data);
+
+	hex_string_to_byte_array(hex_data, data_fl, data_len);
 
 	hex_string_to_byte_array(address, address_fl, address_len);
 
