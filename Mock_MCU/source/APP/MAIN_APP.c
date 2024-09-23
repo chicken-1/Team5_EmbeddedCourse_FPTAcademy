@@ -15,6 +15,7 @@ int main () {
 	HAL_Erase_Flash();
 
 	while(1) {
+		/*pop a record into queue and check error*/
 		pop_queue();
 		switch(error_check) {
 			case ERR_RECORD_START:
@@ -36,7 +37,9 @@ int main () {
 				HAL_SendString((uint8_t*)"Error Check Terminate !\n");
 				break;
 			default:
+				/*if there are no error*/
 				if(temp_queue[0] !=  '\0' && temp_queue[1] != '0'){
+					/*get data and address of record and write to Flash*/
 					get_Data(temp_queue);
 					get_Address(temp_queue);
 					HAL_SendString(temp_queue);
